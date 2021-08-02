@@ -31,12 +31,12 @@ public class DeploymentUnitPhaseServiceAdvice {
 
     @Advice.OnMethodExit(suppress = Throwable.class, inline = false)
     public static void onExitStart(@Advice.FieldValue("phase") Phase phase, @Advice.FieldValue("deploymentUnit") DeploymentUnit deploymentUnit) {
-        Object elasticApmTracer = getElasticApmTracer();
-        if (elasticApmTracer == null) {
-            return;
-        }
-
         if (phase == Phase.FIRST_MODULE_USE) {
+            Object elasticApmTracer = getElasticApmTracer();
+            if (elasticApmTracer == null) {
+                return;
+            }
+
             Module module = deploymentUnit.getAttachment(Attachments.MODULE);
 
             ResourceRoot resourceRoot = deploymentUnit.getAttachment(Attachments.DEPLOYMENT_ROOT);
