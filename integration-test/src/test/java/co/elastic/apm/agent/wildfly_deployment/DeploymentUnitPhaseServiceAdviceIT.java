@@ -56,7 +56,7 @@ class DeploymentUnitPhaseServiceAdviceIT {
             .waitingFor(Wait.forHttp("/mockserver/status").withMethod("PUT").forStatusCode(200));
 
     @Container
-    private static final GenericContainer<?> WILDFLY = new GenericContainer<>(DockerImageName.parse("jboss/wildfly:24.0.0.Final"))
+    private static final GenericContainer<?> WILDFLY = new GenericContainer<>(DockerImageName.parse("jboss/wildfly:25.0.0.Final"))
             .withNetwork(NETWORK)
             .withExposedPorts(8080)
             .withFileSystemBind("target/apm-wildfly-deployment-plugin-it.war", "/opt/jboss/wildfly/standalone/deployments/apm-wildfly-deployment-plugin-it.war")
