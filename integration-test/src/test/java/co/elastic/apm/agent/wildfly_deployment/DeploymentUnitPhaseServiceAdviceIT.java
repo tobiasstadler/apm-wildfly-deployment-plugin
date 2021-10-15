@@ -83,7 +83,7 @@ class DeploymentUnitPhaseServiceAdviceIT {
     }
 
     @Test
-    void testServiceNam() throws IOException {
+    void testServiceName() throws IOException {
         URL url = new URL("http://" + WILDFLY.getContainerIpAddress() + ":" + WILDFLY.getMappedPort(8080) + "/apm-wildfly-deployment-plugin-it/greeting");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()))) {
             assertEquals("Hello World!", reader.readLine());
