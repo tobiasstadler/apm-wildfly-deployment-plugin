@@ -7,6 +7,7 @@ An Elastic APM agent plugin that sets the service name for a deployment on a Wil
 | Plugin | Elastic APM Agent |
 | :--- | :--- |
 | 1.0+ | 1.18.0+ |
+| 2.0+ | 1.27.0+ |
 
 ## Installation
 
