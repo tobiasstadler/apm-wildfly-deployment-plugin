@@ -45,11 +45,16 @@ public class DeploymentUnitPhaseServiceAdvice {
                 return;
             }
 
+            Attributes mainAttributes = manifest.getMainAttributes();
+            if (mainAttributes == null || !mainAttributes.containsKey(Attributes.Name.IMPLEMENTATION_TITLE)) {
+                return;
+            }
+
             try {
                 MethodHandles.publicLookup()
                         .findVirtual(Class.forName("co.elastic.apm.agent.impl.ElasticApmTracer"), "overrideServiceNameForClassLoader", MethodType.methodType(void.class, ClassLoader.class, String.class))
                         .bindTo(elasticApmTracer)
-                        .invoke(module.getClassLoader(), manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_TITLE));
+                        .invoke(module.getClassLoader(), mainAttributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE));
             } catch (Throwable ignored) {
             }
         }
