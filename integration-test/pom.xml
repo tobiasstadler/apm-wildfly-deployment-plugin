@@ -114,6 +114,7 @@
                     <archive>
                         <manifestEntries>
                             <Implementation-Title>My Service Name</Implementation-Title>
+                            <Implementation-Version>My Service Version</Implementation-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>

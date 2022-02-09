@@ -51,10 +51,16 @@ public class DeploymentUnitPhaseServiceAdvice {
             }
 
             try {
+                Class<?> elasticApmTracerClass = Class.forName("co.elastic.apm.agent.impl.ElasticApmTracer");
+                Class<?> serviceInfoClass = Class.forName("co.elastic.apm.agent.configuration.ServiceInfo");
+                Object serviceInfo = MethodHandles.publicLookup()
+                        .findStatic(serviceInfoClass, "of", MethodType.methodType(serviceInfoClass, String.class, String.class))
+                        .invoke(mainAttributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE), mainAttributes.getValue(Attributes.Name.IMPLEMENTATION_VERSION));
+
                 MethodHandles.publicLookup()
-                        .findVirtual(Class.forName("co.elastic.apm.agent.impl.ElasticApmTracer"), "overrideServiceNameForClassLoader", MethodType.methodType(void.class, ClassLoader.class, String.class))
+                        .findVirtual(elasticApmTracerClass, "overrideServiceInfoForClassLoader", MethodType.methodType(void.class, ClassLoader.class, serviceInfoClass))
                         .bindTo(elasticApmTracer)
-                        .invoke(module.getClassLoader(), mainAttributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE));
+                        .invoke(module.getClassLoader(), serviceInfo);
             } catch (Throwable ignored) {
             }
         }

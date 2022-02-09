@@ -89,7 +89,9 @@ class DeploymentUnitPhaseServiceAdviceIT {
             assertEquals("Hello World!", reader.readLine());
         }
 
-        assertEquals("My Service Name", JsonPath.read(getTransaction(), "$.context.service.name"));
+        Map<String, Object> transaction = getTransaction();
+        assertEquals("My Service Name", JsonPath.read(transaction, "$.context.service.name"));
+        assertEquals("My Service Version", JsonPath.read(transaction, "$.context.service.version"));
     }
 
     private static Map<String, Object> getTransaction() {
