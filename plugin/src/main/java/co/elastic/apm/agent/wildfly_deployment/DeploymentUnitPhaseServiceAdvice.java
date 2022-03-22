@@ -15,6 +15,7 @@
  */
 package co.elastic.apm.agent.wildfly_deployment;
 
+import co.elastic.apm.api.ElasticApm;
 import net.bytebuddy.asm.Advice;
 import org.jboss.as.server.deployment.Attachments;
 import org.jboss.as.server.deployment.DeploymentUnit;
@@ -22,8 +23,6 @@ import org.jboss.as.server.deployment.Phase;
 import org.jboss.as.server.deployment.module.ResourceRoot;
 import org.jboss.modules.Module;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -32,11 +31,6 @@ public class DeploymentUnitPhaseServiceAdvice {
     @Advice.OnMethodExit(suppress = Throwable.class, inline = false)
     public static void onExitStart(@Advice.FieldValue("phase") Phase phase, @Advice.FieldValue("deploymentUnit") DeploymentUnit deploymentUnit) {
         if (phase == Phase.FIRST_MODULE_USE) {
-            Object elasticApmTracer = getElasticApmTracer();
-            if (elasticApmTracer == null) {
-                return;
-            }
-
             Module module = deploymentUnit.getAttachment(Attachments.MODULE);
 
             ResourceRoot resourceRoot = deploymentUnit.getAttachment(Attachments.DEPLOYMENT_ROOT);
@@ -50,29 +44,11 @@ public class DeploymentUnitPhaseServiceAdvice {
                 return;
             }
 
-            try {
-                Class<?> elasticApmTracerClass = Class.forName("co.elastic.apm.agent.impl.ElasticApmTracer");
-                Class<?> serviceInfoClass = Class.forName("co.elastic.apm.agent.configuration.ServiceInfo");
-                Object serviceInfo = MethodHandles.publicLookup()
-                        .findStatic(serviceInfoClass, "of", MethodType.methodType(serviceInfoClass, String.class, String.class))
-                        .invoke(mainAttributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE), mainAttributes.getValue(Attributes.Name.IMPLEMENTATION_VERSION));
-
-                MethodHandles.publicLookup()
-                        .findVirtual(elasticApmTracerClass, "overrideServiceInfoForClassLoader", MethodType.methodType(void.class, ClassLoader.class, serviceInfoClass))
-                        .bindTo(elasticApmTracer)
-                        .invoke(module.getClassLoader(), serviceInfo);
-            } catch (Throwable ignored) {
-            }
-        }
-    }
-
-    private static Object getElasticApmTracer() {
-        try {
-            return MethodHandles.publicLookup()
-                    .findStatic(Class.forName("co.elastic.apm.agent.impl.GlobalTracer"), "getTracerImpl", MethodType.methodType(Class.forName("co.elastic.apm.agent.impl.ElasticApmTracer")))
-                    .invoke();
-        } catch (Throwable ignored) {
-            return null;
+            ElasticApm.setServiceInfoForClassLoader(
+                    module.getClassLoader(),
+                    mainAttributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE),
+                    mainAttributes.getValue(Attributes.Name.IMPLEMENTATION_VERSION)
+            );
         }
     }
 }

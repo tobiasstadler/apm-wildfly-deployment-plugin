@@ -16,6 +16,10 @@
     <dependencies>
         <dependency>
             <groupId>co.elastic.apm</groupId>
+            <artifactId>apm-agent-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>co.elastic.apm</groupId>
             <artifactId>apm-agent-plugin-sdk</artifactId>
             <scope>provided</scope>
         </dependency>
