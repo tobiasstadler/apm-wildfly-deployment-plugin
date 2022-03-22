@@ -5,13 +5,13 @@
     <parent>
         <groupId>com.github.tobiasstadler.apm</groupId>
         <artifactId>apm-wildfly-deployment-plugin-parent</artifactId>
-        <version>3.1-SNAPSHOT</version>
+        <version>4.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>com.github.tobiasstadler.apm</groupId>
     <artifactId>apm-wildfly-deployment-plugin</artifactId>
-    <version>3.1-SNAPSHOT</version>
+    <version>4.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
