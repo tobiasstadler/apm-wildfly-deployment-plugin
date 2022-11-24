@@ -15,8 +15,8 @@
  */
 package co.elastic.apm.agent.wildfly_deployment;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
 @Path("/greeting")
 public class GreetingResource {
